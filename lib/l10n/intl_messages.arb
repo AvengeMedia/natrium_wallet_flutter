@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2021-03-24T20:45:02.422993",
+  "@@last_modified": "2021-06-21T16:53:07.653251",
   "cancel": "Cancel",
   "@cancel": {
     "description": "dialog_cancel",
@@ -192,6 +192,12 @@
     "type": "text",
     "placeholders": {}
   },
+  "handoffInvalid": "The entered payment request isn't supported by Natrium, or contains invalid data.",
+  "@handoffInvalid": {
+    "description": "Handoff payment request error (unsupported/invalid)",
+    "type": "text",
+    "placeholders": {}
+  },
   "removeContact": "Remove Contact",
   "@removeContact": {
     "description": "contact_remove_btn",
@@ -372,6 +378,30 @@
     "type": "text",
     "placeholders": {}
   },
+  "handoffPaymentFailed": "Payment failed or rejected by the service",
+  "@handoffPaymentFailed": {
+    "description": "Payment failed or was rejected (sometimes followed by colon with details)",
+    "type": "text",
+    "placeholders": {}
+  },
+  "handoffPaymentAlreadyComplete": "You have already sent this payment.",
+  "@handoffPaymentAlreadyComplete": {
+    "description": "One-time handoff payment has already been made",
+    "type": "text",
+    "placeholders": {}
+  },
+  "handoffExpired": "This payment has expired",
+  "@handoffExpired": {
+    "description": "Handoff payment has expired (sometimes followed by colon with details)",
+    "type": "text",
+    "placeholders": {}
+  },
+  "usingHandoff": "Using block handoff",
+  "@usingHandoff": {
+    "description": "Payment will be processed \"using block handoff\" protocol",
+    "type": "text",
+    "placeholders": {}
+  },
   "enterAmount": "Enter Amount",
   "@enterAmount": {
     "description": "send_amount_hint",
@@ -417,6 +447,18 @@
   "sendFrom": "Send From",
   "@sendFrom": {
     "description": "send_title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "paymentCannotReplay": "This payment cannot be replayed directly from the app. Return to the website or store to make another payment.",
+  "@paymentCannotReplay": {
+    "description": "Payment cannot be replayed (was a one-time payment)",
+    "type": "text",
+    "placeholders": {}
+  },
+  "sendDestinationWarning": "The protocol used to make this payment could not be detected. If you are sending funds to a website, exchange or business, you should verify that the destination address is correct before sending.",
+  "@sendDestinationWarning": {
+    "description": "Hint user that destination address should be checked first.",
     "type": "text",
     "placeholders": {}
   },

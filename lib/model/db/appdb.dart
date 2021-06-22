@@ -1,15 +1,17 @@
 import 'dart:async';
 import 'dart:io' as io;
-import 'package:flutter/foundation.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path_provider/path_provider.dart';
+
 import 'package:natrium_wallet_flutter/model/db/account.dart';
 import 'package:natrium_wallet_flutter/model/db/contact.dart';
+import 'package:natrium_wallet_flutter/model/db/payment.dart';
 import 'package:natrium_wallet_flutter/util/nanoutil.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 class DBHelper {
-  static const int DB_VERSION = 3;
+  static const int DB_VERSION = 4;
+
   static const String CONTACTS_SQL = """CREATE TABLE Contacts( 
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
         name TEXT, 
@@ -23,9 +25,14 @@ class DBHelper {
         last_accessed INTEGER,
         private_key TEXT,
         balance TEXT)""";
-  static const String ACCOUNTS_ADD_ACCOUNT_COLUMN_SQL = """
-    ALTER TABLE Accounts ADD address TEXT
-    """;
+  static const String ACCOUNTS_ADD_ACCOUNT_COLUMN_SQL =
+      "ALTER TABLE Accounts ADD address TEXT";
+  static const String PAYMENTS_SQL = """CREATE TABLE Payments( 
+        block_hash TEXT PRIMARY KEY,
+        reference TEXT,
+        protocol INTEGER,
+        protocol_data TEXT)""";
+
   static Database _db;
 
   NanoUtil _nanoUtil;
@@ -53,6 +60,7 @@ class DBHelper {
     await db.execute(CONTACTS_SQL);
     await db.execute(ACCOUNTS_SQL);
     await db.execute(ACCOUNTS_ADD_ACCOUNT_COLUMN_SQL);
+    await db.execute(PAYMENTS_SQL);
   }
 
   void _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -62,8 +70,11 @@ class DBHelper {
       await db.execute(ACCOUNTS_ADD_ACCOUNT_COLUMN_SQL);
     } else if (oldVersion == 2) {
       await db.execute(ACCOUNTS_ADD_ACCOUNT_COLUMN_SQL);
+    } else if (oldVersion == 3) {
+      await db.execute(PAYMENTS_SQL);
     }
   }
+
 
   // Contacts
   Future<List<Contact>> getContacts() async {
@@ -337,6 +348,50 @@ class DBHelper {
 
   Future<void> dropAccounts() async {
     var dbClient = await db;
-    return await dbClient.rawDelete('DELETE FROM ACCOUNTS');
+    await dbClient.rawDelete('DELETE FROM ACCOUNTS');
   }
+
+
+  // Payments
+  Future<PaymentInfo> getPayment(String hash) async {
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery(
+        "SELECT * FROM Payments WHERE block_hash=UPPER(?)",
+        [hash]);
+
+    if (list.length == 1) {
+      return PaymentInfo(
+          list[0]["reference"],
+          PaymentProtocolExt.fromInt(list[0]["protocol"]),
+          protocolData: list[0]["protocol_data"]);
+    }
+    return null;
+  }
+
+  Future<int> savePayment(String blockHash, PaymentInfo payment) async {
+    var dbClient = await db;
+    return await dbClient.rawInsert(
+        'REPLACE INTO Payments values(UPPER(?), ?, ?, ?)',
+        [
+          blockHash,
+          (payment.reference != null && payment.reference.length > 100)
+              ? payment.reference.substring(0, 100)
+              : payment.reference,
+          payment.protocol.intVal,
+          payment.protocolData
+        ]);
+  }
+
+  Future<void> dropPayments() async {
+    var dbClient = await db;
+    await dbClient.rawDelete('DELETE FROM Payments');
+  }
+
+
+
+  // block_hash TEXT PRIMARY KEY
+  // reference TEXT
+  // method INTEGER
+  // method_data BLOB
+
 }

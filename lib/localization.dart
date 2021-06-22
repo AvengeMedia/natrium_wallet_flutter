@@ -178,6 +178,13 @@ class AppLocalization {
         name: "qrUnknownError");
   }
 
+  String get handoffInvalid {
+    return Intl.message(
+        "The entered payment request isn't supported by Natrium, or contains invalid data.",
+        desc: "Handoff payment request error (unsupported/invalid)",
+        name: 'handoffInvalid');
+  }
+
   /// -- END GENERIC ITEMS
 
   /// -- CONTACT ITEMS
@@ -344,6 +351,30 @@ class AppLocalization {
         name: 'mantaError');
   }
 
+  String get handoffPaymentFailed {
+    return Intl.message("Payment failed or rejected by the service",
+        desc: 'Payment failed or was rejected (sometimes followed by colon with details)',
+        name: 'handoffPaymentFailed');
+  }
+
+  String get handoffPaymentAlreadyComplete {
+    return Intl.message("You have already sent this payment.",
+        desc: 'One-time handoff payment has already been made',
+        name: 'handoffPaymentAlreadyComplete');
+  }
+
+  String get handoffExpired {
+    return Intl.message("This payment has expired",
+        desc: 'Handoff payment has expired (sometimes followed by colon with details)',
+        name: 'handoffExpired');
+  }
+
+  String get usingHandoff {
+    return Intl.message("Using block handoff",
+        desc: 'Payment will be processed "using block handoff" protocol',
+        name: 'usingHandoff');
+  }
+
   String get enterAmount {
     return Intl.message("Enter Amount",
         desc: 'send_amount_hint', name: 'enterAmount');
@@ -381,6 +412,19 @@ class AppLocalization {
 
   String get sendFrom {
     return Intl.message("Send From", desc: 'send_title', name: 'sendFrom');
+  }
+
+  String get paymentCannotReplay {
+    return Intl.message("This payment cannot be replayed directly from the app. Return to the website or store to make another payment.",
+        desc: 'Payment cannot be replayed (was a one-time payment)',
+        name: 'paymentCannotReplay');
+  }
+
+  String get sendDestinationWarning {
+    return Intl.message(
+        "The protocol used to make this payment could not be detected. If you are sending funds to a website, exchange or business, you should verify that the destination address is correct before sending.",
+        desc: 'Hint user that destination address should be checked first.',
+        name: 'sendDestinationWarning');
   }
 
   /// -- END SEND ITEMS
